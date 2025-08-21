@@ -6,19 +6,25 @@ OMP_CXX = /opt/homebrew/opt/llvm/bin/clang++
 OMP_FLAGS = -std=c++17 -O2 -fopenmp -I/opt/homebrew/include
 OMP_LDFLAGS = -L/opt/homebrew/lib -lbenchmark -lpthread -L/opt/homebrew/opt/llvm/lib -fopenmp
 
-TARGETS = baseline_seq baseline_omp
+TARGETS = example
 
 all: $(TARGETS)
 
 baseline_seq: baseline.cpp
 	$(CXX) $(CXXFLAGS) $< -o $@ $(LDFLAGS)
 
+sync: sync.cpp
+	$(OMP_CXX) $(OMP_FLAGS) $< -o $@ $(OMP_LDFLAGS)
+
 baseline_omp: baseline_with_omp.cpp
+	$(OMP_CXX) $(OMP_FLAGS) $< -o $@ $(OMP_LDFLAGS)
+example: example.cpp
 	$(OMP_CXX) $(OMP_FLAGS) $< -o $@ $(OMP_LDFLAGS)
 
 run: all
-	./baseline_seq
-	./baseline_omp
+# 	./baseline_seq
+# 	./baseline_omp
+	./sync
 
 clean:
 	rm -f $(TARGETS)
